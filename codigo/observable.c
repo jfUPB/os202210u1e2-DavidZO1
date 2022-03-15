@@ -1,14 +1,14 @@
-#include "subject.h"
+#include "common.h"
+#include "observable.h"
 
-static void _destroy(Subject* this)
-{
-	if (this != NULL) {
+static void _destroy(Observable* this) {
+	if (NULL != this) {
 		free(this);
 		this = NULL;
 	}
 }
 
-static int _registerObserver(Subject* this, Observer* observer)
+static int _registerObserver(Observable* this, Observer* observer)
 {
 	int i = 0;
 
@@ -20,11 +20,11 @@ static int _registerObserver(Subject* this, Observer* observer)
 		}
 	}
 
-	printf("[INF] [SUBJECT] we have rush the max number of observers\n");
+	printf("se excedio el maximo numero de observadores\n");
 	return KO;
 }
 
-static int _unregisterObserver(Subject *this, Observer* observer)
+static int _unregisterObserver(Observable*this, Observer* observer)
 {
 	int i = 0;
 
@@ -40,7 +40,7 @@ static int _unregisterObserver(Subject *this, Observer* observer)
 	return KO;
 }
 
-static void _notifyObservers(Subject* this)
+static void _notifyObservers(Observable* this)
 {
 	int i = 0;
 
@@ -50,17 +50,18 @@ static void _notifyObservers(Subject* this)
 		}
 	}
 }
-
-Subject * subjectNew(void* impl, int type)
-{
-	Subject* this = (Subject *) malloc(sizeof(*this));
-
+/**
+ * Constructor
+ * @return Instancia del observable
+ */
+Observable * observable_new(void* impl, int type) {
+	Observable * this;
+	this = (Observable *) calloc(1, sizeof(*this));
 	this->destroy = _destroy;
 	this->impl = impl;
 	this->type = type;
 	this->registerObserver = _registerObserver;
 	this->unregisterObserver = _unregisterObserver;
 	this->notifyObservers = _notifyObservers;
-
 	return this;
 }
